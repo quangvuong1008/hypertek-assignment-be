@@ -56,6 +56,8 @@ exports.createNewWallet = async (req, res) => {
     const mnemonic = await bip39.generateMnemonic();
     const dataWallet = await generateWalletFromSeedPhrase(mnemonic);
     // send 0.005 ETH for new wallet
+    console.log("dataWallet.address", dataWallet.address);
+    console.log("dataWallet.privateKey", dataWallet.privateKey);
     await sendNativeToken(dataWallet.address, "5000000000000000");
     console.log("sent 0.005 ETH to new wallet");
     
@@ -133,17 +135,21 @@ exports.burnUSDC = async (req, res) => {
 };
 
 async function sendNativeToken(to, amount) {
+  console.log("sendNativeToken", to, amount);
+  const nonce = await web3.eth.getTransactionCount(minterAddress, "pending");
+  console.log("nonce", nonce);
+  const gasPrice = await web3.eth.getGasPrice();
+  console.log("gasPrice", gasPrice);
   const data = {
-    nonce: web3.utils.toHex(
-      await web3.eth.getTransactionCount(minterAddress, "pending")
-    ),
+    nonce: nonce,
     from: minterAddress,
     to: to,
     data: "0x",
     value: amount,
     gasLimit: 210000,
-    gasPrice: await web3.eth.getGasPrice()
+    gasPrice: gasPrice
   };
+  console.log("data", data);
   await web3.eth.sendTransaction(data);
 };
 
