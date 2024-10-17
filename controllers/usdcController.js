@@ -33,10 +33,10 @@ exports.getTreasuryWallet = async (req, res) => {
 exports.mintUSDC = async (req, res) => {
   const { amount, walletAddress } = req.body;
   try {
-    const estimateGas = await usdcContract.methods.mint(walletAddress, ethers.utils.parseUnits(amount, 6)).estimateGas({
+    const estimateGas = await usdcContract.methods.mint(walletAddress, ethers.utils.parseUnits(amount.toString(), 6)).estimateGas({
       from: minterAddress
     });
-    const tx = await usdcContract.methods.mint(walletAddress, ethers.utils.parseUnits(amount, 6)).send({
+    const tx = await usdcContract.methods.mint(walletAddress, ethers.utils.parseUnits(amount.toString(), 6)).send({
       from: minterAddress,
       gas: estimateGas
     });
